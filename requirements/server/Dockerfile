@@ -6,9 +6,10 @@ RUN apk add make
 RUN apk add vim
 RUN apk add cmake
 
-RUN mkdir client
-WORKDIR client
-COPY ./conf/start_server.sh /client
-RUN chmod +x /client/start_server.sh
+COPY ./conf/start_server.sh /
+RUN chmod +x start_server.sh
 
-ENTRYPOINT ["ash", "start_server.sh"]
+RUN mkdir server
+WORKDIR server
+
+ENTRYPOINT ["ash", "/start_server.sh"]

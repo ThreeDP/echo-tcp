@@ -14,9 +14,9 @@ volumes:
   server-volume:
     driver: local
     driver_opts:
-    type: none
-    o: bind
-    device: ./server/src
+      type: none
+      o: bind
+      device: ./server/src
 
 services:
   client:
