@@ -1,0 +1,42 @@
+version: '3'
+
+networks:
+  net:
+
+volumes:
+  client-volume:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./client/src
+
+  server-volume:
+    driver: local
+    driver_opts:
+    type: none
+    o: bind
+    device: ./server/src
+
+services:
+  client:
+    container_name: client-service
+    image: client-img
+    build:
+      context: ./client
+    restart: always
+    volumes:
+      - client-volume:/client
+    networks:
+      - net
+
+  server:
+    container_name: server-service
+    image: server-img
+    build:
+      context: ./server
+    restart: always
+    volumes:
+      - server-volume:/server
+    networks:
+      - net
