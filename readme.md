@@ -3,6 +3,12 @@
 
 # How to build
 
+### Config .env file
+> Add a .env file inside requirements directory and set values with the above values.
+
+        SERVER_ADDR=<server address>
+        SERVER_PORT=<server port>
+
 ### Build with make
 
 **To build and run the project, execute the following command:**
@@ -57,10 +63,10 @@ make re
     b. Else, send a Login Response with status code FAILED, and disconnect client.
 3. Handling of echo requesst:
     a. The client will send Echo Request with variable sized ciphered message.
-    b. The server shall get messa in the Echo Request and decipher it and then send to as Echo Response.
+    b. The server shall get message in the Echo Request and decipher it and then send to as Echo Response.
 
 ### Username and Password Validation
-> Any ysername and password are valid.
+> Any username and password are valid.
 
 ### Decryption of Echo Request Message
 

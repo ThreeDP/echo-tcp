@@ -18,9 +18,13 @@ volumes:
       o: bind
       device: ./server/src
 
+secrets:
+  environment:
+    file: ./env
+
 services:
   client:
-    container_name: client-service
+    container_name: client
     image: client-img
     build:
       context: ./client
@@ -29,9 +33,16 @@ services:
       - client-volume:/client
     networks:
       - net
+    secrets:
+      - environment
+    environment:
+      SERVER_ADDR: server
+      SERVER_PORT: "${SERVER_PORT}"
+    depends_on:
+      - server
 
   server:
-    container_name: server-service
+    container_name: server
     image: server-img
     build:
       context: ./server
@@ -40,3 +51,10 @@ services:
       - server-volume:/server
     networks:
       - net
+    secrets:
+      - environment
+    environment:
+      SERVER_ADDR: "${SERVER_ADDR}"
+      SERVER_PORT: "${SERVER_PORT}"
+    expose:
+      - "${SERVER_PORT}"

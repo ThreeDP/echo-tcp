@@ -1,3 +1,4 @@
 *.0
 .vscode
 *.a
+.env
