@@ -1,3 +1,5 @@
 #!/bin/sh
 
-tail -f /dev/null
+make
+chmod +x server
+./server $SERVER_ADDR $SERVER_PORT
