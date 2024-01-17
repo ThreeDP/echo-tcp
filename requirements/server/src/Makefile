@@ -3,7 +3,7 @@ HEADERS_PATH				=	./includes/
 HEADERS						=	$(addprefix $(HEADERS_PATH), \
 									Server.hpp)
 SRCS						=	main.cpp Server.cpp
-OBJ_PATH					=	./objs
+OBJ_PATH					=	./objs/
 OBJS						=	$(SRCS:%.cpp=$(OBJ_PATH)%.o)
 
 TESTS						=	hello_test

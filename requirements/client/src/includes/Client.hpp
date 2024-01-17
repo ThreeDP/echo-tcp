@@ -4,23 +4,27 @@
 # include <sys/socket.h>
 # include <sys/types.h>
 # include <cstring>
+# include <string>
 # include <arpa/inet.h>
 # include <unistd.h>
 # include <stdlib.h>
 # include <errno.h>
 # include <iostream>
+# include <netdb.h>
 
 #include <stdio.h>
 
 # define MAX_LINE 4096
 
 typedef struct sockaddr_in sock_address;
+typedef struct addrinfo addrinfo;
 
 class Client {
     int             _sockFd;
     std::string     _serverHost;
-    uint32_t        _serverPort;
-    sock_address    _clientAddr;
+    std::string     _serverPort;
+    addrinfo        _clientAddr;
+    addrinfo        *_sockAddr;
     std::string     _username;
     std::string     _password;
     Client(void){};
