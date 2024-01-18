@@ -6,7 +6,12 @@ int main(int ac, char **av) {
         return (1);
     }
     Server      server(av[1], av[2]);
-
-    server.configServer();
-    server.putServerToListen();
+    try {
+        server.configServer();
+        server.putServerToListen();
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        exit(errno);
+    }
+    std::cout << "[ Closing the server application. ]" << std::endl;
 }
