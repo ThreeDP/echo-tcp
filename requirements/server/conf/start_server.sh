@@ -2,4 +2,5 @@
 
 make
 chmod +x server
-./server $SERVER_ADDR $SERVER_PORT
+#./server $SERVER_ADDR $SERVER_PORT
+tail -f /dev/null

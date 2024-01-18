@@ -1,18 +1,15 @@
 #ifndef __HANDLE_NET_HPP__
 # define __HANDLE_NET_HPP__
 
-# include <sys/socket.h>
-# include <sys/types.h>
-# include <cstring>
-# include <arpa/inet.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <errno.h>
-# include <iostream>
-
-# define MAX_LINE 4096
+# include "./LoginResponse.hpp"
 
 typedef struct sockaddr_in sock_address;
+
+typedef struct s_echo_response {
+    t_header        header;
+    uint16_t        messageSize;
+    char            plainMessage[65530];
+}               t_echo_response;
 
 class Server {
     int                 _listenFD;
@@ -22,6 +19,7 @@ class Server {
     sock_address        _serverAddr;
     pid_t               _childPid;
     socklen_t           _childLen;
+    LoginResponse       _login;
 
     uint32_t            _serverHost;
     uint32_t            _serverPort;

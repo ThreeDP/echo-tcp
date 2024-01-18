@@ -1,5 +1,5 @@
-#ifndef __LOGIN_HPP__
-# define __LOGIN_HPP__
+#ifndef __LOGIN_REQUEST_HPP__
+# define __LOGIN_REQUEST_HPP__
 
 # include "./header.h"
 
@@ -19,15 +19,14 @@ class LoginRequest {
 	const std::string		_password;
 	t_login_request			_labelRequest;
 	char					_sendBuf[LOGIN_BUFFER_SIZE];
-	char					_recvBuf[LOGIN_BUFFER_SIZE];
-	std::stack<uint32_t>	keys;
+	char					_recvBuf[LOGIN_RESPOSE_SIZE];
+	std::stack<uint32_t>	_keys;
 
 	void	mountRequest(uint8_t seq);
 	bool	checkRequest(void);
 	void	checkAndmemcpy(size_t sizeStr, size_t fixedSize, char *dest, const char *src);
 	void	genInitialKey(void);
 	uint8_t	checkSum(std::string str);
-	void	genInitialKey(void);
 	void	nextKey(void);
 	void	encryptMessage(std::string &str);
 
@@ -39,12 +38,5 @@ class LoginRequest {
    
 		bool	login(int sockFD, uint8_t seq);
 };
-
-void	LoginRequest::genInitialKey(void) {
-	uint32_t	genInitialKey
-
-	initialkey = 
-	this->keys.push(initialKey);
-}
 
 #endif
