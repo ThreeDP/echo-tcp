@@ -1,13 +1,13 @@
-#include "./includes/Login.hpp"
+#include "./includes/LoginRequest.hpp"
 
-void	Login::checkAndmemcpy(size_t sizeStr, size_t fixedSize, char *dest, const char *src) {
+void	LoginRequest::checkAndmemcpy(size_t sizeStr, size_t fixedSize, char *dest, const char *src) {
 	if (sizeStr < fixedSize)
 		memcpy(dest, src, sizeStr);
 	else
 		memcpy(dest, src, fixedSize);
 }
 
-void	Login::mountRequest(uint8_t seq) {
+void	LoginRequest::mountRequest(uint8_t seq) {
 	bzero(&this->_sendBuf, sizeof(this->_sendBuf));
 	bzero(&this->_labelRequest, sizeof(this->_labelRequest));
 	this->_labelRequest.header = (t_header) {.messageSize=LOGIN_BUFFER_SIZE, .messageType=0, .messageSequence=seq};
@@ -16,7 +16,7 @@ void	Login::mountRequest(uint8_t seq) {
 	memcpy(this->_sendBuf, &this->_labelRequest, LOGIN_BUFFER_SIZE);
 }
 
-bool	Login::checkRequest(void) {
+bool	LoginRequest::checkRequest(void) {
 	t_header	headerResponse;
 	uint16_t	response;
 
@@ -29,7 +29,43 @@ bool	Login::checkRequest(void) {
 	return true;
 }
 
-bool	Login::login(int sockFD, uint8_t seq) {
+uint8_t	LoginRequest::checkSum(std::string str) {
+	uint8_t	sum;
+	ssize_t	size;
+
+	size = str.size();
+	for (ssize_t i = 0; i < size; i++) {
+		sum += str[i];
+	}
+	return (~sum);
+}
+
+void	LoginRequest::genInitialKey(void) {
+	uint32_t	initialKey;
+	
+	initialKey = (this->_labelRequest.messageSequence << 16) | \
+		(this->checkSum(this->_username) << 8) | \
+		this->checkSum(this->_password);
+	this->_key.push(initialKey);
+}
+
+void	LoginRequest::nextKey(void) {
+	uint32_t	newKey;
+	
+	newKey = (this->_key.top() * 1103515245 + 12345) % 0x7FFFFFFF;
+	this->_key.push(newKey);
+}
+
+void	LoginRequest::encryptMessage(std::string &str) {
+	ssize_t	size;
+
+	size = str.size();
+	for (ssize_t i = 0; i < size; i++) {
+		str[i] ^= (this->key.top() % 256);
+	}
+}
+
+bool	LoginRequest::login(int sockFD, uint8_t seq) {
 	ssize_t	bytes_send;
 	ssize_t bytes_recv;
 
@@ -44,5 +80,6 @@ bool	Login::login(int sockFD, uint8_t seq) {
 		std::cerr << "FAILED: Login or password incorrect" << std::endl;
 		return false;
 	}
+	this->genInitialKey();
 	return true;
 }

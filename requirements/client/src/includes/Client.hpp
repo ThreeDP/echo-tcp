@@ -1,7 +1,7 @@
 #ifndef __CLIENT_HPP__
 # define __CLIENT_HPP__
 
-# include "Login.hpp"
+# include "LoginRequest.hpp"
 
 typedef struct sockaddr_in sock_address;
 typedef struct addrinfo addrinfo;
@@ -18,7 +18,7 @@ class Client {
     std::string     _serverPort;
     addrinfo        _clientAddr;
     addrinfo        *_sockAddr;
-    Login           _autheticate;
+    LoginRequest    _autheticate;
     Client(void){};
 
     public:

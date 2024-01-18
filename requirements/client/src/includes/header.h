@@ -12,6 +12,8 @@
 # include <iostream>
 # include <netdb.h>
 # include <stdio.h>
+# include <map>
+# include <stack>
 
 # define HEADER_SIZE 4
 # define MAX_LINE 65536

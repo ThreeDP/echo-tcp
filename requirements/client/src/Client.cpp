@@ -1,7 +1,7 @@
 #include "./includes/Client.hpp"
 
 Client::Client(std::string sh, std::string sp, std::string user, std::string pass) \
-: _serverHost(sh), _serverPort(sp), _autheticate(Login(user, pass)) {
+: _serverHost(sh), _serverPort(sp), _autheticate(LoginRequest(user, pass)) {
     bzero(&this->_clientAddr, sizeof(this->_clientAddr));
     this->_sockFd = 0;
 }
