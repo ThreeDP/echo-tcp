@@ -1,7 +1,7 @@
 #include "./includes/Client.hpp"
 
 Client::Client(std::string sh, std::string sp, std::string user, std::string pass) \
-: _serverHost(sh), _serverPort(sp), _username(user), _password(pass) {
+: _serverHost(sh), _serverPort(sp), _autheticate(Login(user, pass)) {
     bzero(&this->_clientAddr, sizeof(this->_clientAddr));
     this->_sockFd = 0;
 }
@@ -28,16 +28,17 @@ void    Client::confingClient(void) {
 }
 
 void    Client::connectToServer(void) {
+
     if (connect(this->_sockFd, this->_sockAddr->ai_addr, this->_sockAddr->ai_addrlen) == -1) {
         char    *errno_msg = strerror(errno);
         std::string err = "Error: connecting to the server [ " + std::string(errno_msg) + " ].";
         throw(Except(err));
     }
+    if (this->_autheticate.login(this->_sockFd, 8) == false) {
+        std::string err = "Error: autheticate.";
+        throw(Except(err));
+    }
     std::cout << "Connect on host: " << this->_serverHost << " | Port: " << this->_serverPort << std::endl;
-}
-
-void    Client::authenticateToTheServer(void) {
-
 }
 
 void    Client::sendMessageToServer(void) {

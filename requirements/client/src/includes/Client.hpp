@@ -1,23 +1,16 @@
 #ifndef __CLIENT_HPP__
 # define __CLIENT_HPP__
 
-# include <sys/socket.h>
-# include <sys/types.h>
-# include <cstring>
-# include <string>
-# include <arpa/inet.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <errno.h>
-# include <iostream>
-# include <netdb.h>
-
-#include <stdio.h>
-
-# define MAX_LINE 4096
+# include "Login.hpp"
 
 typedef struct sockaddr_in sock_address;
 typedef struct addrinfo addrinfo;
+
+typedef struct s_echo_request {
+    t_header        header;
+    uint16_t        messageSize;
+    char            cipherMessage[MAX_CIPHER_SIZE];
+}               t_echo_request;
 
 class Client {
     int             _sockFd;
@@ -25,8 +18,7 @@ class Client {
     std::string     _serverPort;
     addrinfo        _clientAddr;
     addrinfo        *_sockAddr;
-    std::string     _username;
-    std::string     _password;
+    Login           _autheticate;
     Client(void){};
 
     public:
@@ -34,7 +26,6 @@ class Client {
         ~Client(void);
 
         void    confingClient(void);
-        void    authenticateToTheServer(void);
         void    sendMessageToServer(void);
         void    connectToServer(void);
 

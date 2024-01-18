@@ -4,8 +4,8 @@ NAME						=	client
 FLAGS						=	-g3
 HEADERS_PATH				=	./includes/
 HEADERS						=	$(addprefix $(HEADERS_PATH), \
-									Client.hpp)
-SRCS						=	main.cpp Client.cpp
+									Client.hpp Login.hpp header.h)
+SRCS						=	main.cpp Client.cpp Login.cpp
 OBJ_PATH					=	./objs/
 OBJS						=	$(SRCS:%.cpp=$(OBJ_PATH)%.o)
 
