@@ -39,4 +39,6 @@ class LoginRequest {
 		bool	login(int sockFD);
 };
 
+std::ostream &operator<<(std::ostream &os, t_header const &h);
+
 #endif

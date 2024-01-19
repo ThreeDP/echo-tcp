@@ -31,6 +31,7 @@ typedef struct s_echo_request {
     char            cipherMessage[MAX_TEXT_SIZE];
 }               t_echo_request;
 
+
 typedef struct s_echo_response {
     t_header        header;
     uint16_t        messageSize;

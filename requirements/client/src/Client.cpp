@@ -1,27 +1,31 @@
 #include "./includes/Client.hpp"
 
-void    printTest1(t_echo_response eRes) {
-    std::cout << "[=============== HEADER Res ===============]" << std::endl;
-    std::cout << "Message Size: '" << static_cast<int>(eRes.header.messageSize) << "'\n";
-    std::cout << "Message Type: '" << static_cast<int>(eRes.header.messageType) << "'\n";
-    std::cout << "Message Sequence: '" << static_cast<int>(eRes.header.messageSequence) << "'\n";
-    std::cout << "[=============== BODY ===============]" << std::endl;
-    std::cout << "Message Size: '" << eRes.messageSize << "'\n";
-    std::cout << "Plain Text: '" << eRes.plainMessage << "'\n\n";
+std::ostream &operator<<(std::ostream &os, t_echo_response const &eRes) {
+	os << "\n|=============== HEADER Res ===============|" << std::endl;
+    os << "| Message Size: " << static_cast<int>(eRes.header.messageSize) << "\n";
+    os << "| Message Type: " << static_cast<int>(eRes.header.messageType) << "\n";
+    os << "| Message Sequence: " << static_cast<int>(eRes.header.messageSequence) << "\n";
+    os << "|================== BODY ==================|" << std::endl;
+    os << "| Message Size: " << eRes.messageSize << "\n";
+    os << "| Plain Message: [ " << eRes.plainMessage << " ]\n\n";
+	return (os);
 }
 
-void    printTest2(t_echo_request eReq) {
-    std::cout << "\n[=============== HEADER Req ===============]" << std::endl;
-    std::cout << "Message Size: '" << static_cast<int>(eReq.header.messageSize) << "'\n";
-    std::cout << "Message Type: '" << static_cast<int>(eReq.header.messageType) << "'\n";
-    std::cout << "Message Sequence: '" << static_cast<int>(eReq.header.messageSequence) << "'\n";
-    std::cout << "[=============== BODY ===============]" << std::endl;
-    std::cout << "Message Size: '" << eReq.messageSize << "'\n";
-    std::cout << "Cipher Message: '";
-    for (int i = 0; i < eReq.messageSize; i++) {
-        std::cout << std::hex << static_cast<int>(eReq.cipherMessage[i]) << " ";
+std::ostream &operator<<(std::ostream &os, t_echo_request const &eReq) {
+	os << "\n|=============== HEADER Req ===============|" << std::endl;
+    os << "| Message Size: " << static_cast<int>(eReq.header.messageSize) << "\n";
+    os << "| Message Type: " << static_cast<int>(eReq.header.messageType) << "\n";
+    os << "| Message Sequence: " << static_cast<int>(eReq.header.messageSequence) << "\n";
+    os << "|================== BODY ==================|" << std::endl;
+    os << "| Message Size: " << eReq.messageSize << "\n";
+    os << "| Cipher Message: [ ";
+    for (int i = 0; i < static_cast<int>(eReq.messageSize); i++) {
+        os << std::hex << static_cast<int>(eReq.cipherMessage[i]);
+        if (i < static_cast<int>(eReq.messageSize) - 1)
+            os << " ";
     }
-    std::cout << "'\n";
+    os << " ]" << std::endl;
+	return (os);
 }
 
 Client::Client() : _serverHost("0.0.0.0"), _serverPort("9000"), _autheticate(LoginRequest()) {
@@ -71,7 +75,7 @@ ssize_t    Client::mountRequest(char *send, char *line, uint8_t msgSeq) {
     memcpy(&eReq.cipherMessage, line, lineSize);
     memcpy(send, &eReq, MAX_CIPHER_SIZE);
     bzero(line, MAX_LINE);
-    printTest2(eReq);
+    std::cout << eReq;
     return eReq.header.messageSize;
 }
 
@@ -159,5 +163,5 @@ void    Client::recvMessage(void) {
         throw(Except(err));
     }
     eRes = this->unmountResponse(buf);
-    printTest1(eRes);
+    std::cout << eRes;
 }

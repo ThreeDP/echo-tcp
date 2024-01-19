@@ -1,12 +1,13 @@
 #include "./includes/LoginRequest.hpp"
 
-void    printTest(t_header h, uint16_t response) {
-    std::cout << "[=============== HEADER ===============]" << std::endl;
-    std::cout << "Message Size: '" << static_cast<int>(h.messageSize) << "'\n";
-    std::cout << "Message Type: '" << static_cast<int>(h.messageType) << "'\n";
-    std::cout << "Message Sequence: '" << static_cast<int>(h.messageSequence) << "'\n";
-    std::cout << "[=============== BODY ===============]" << std::endl;
-    std::cout << "Status: '" << response << "'\n";
+std::ostream &operator<<(std::ostream &os, t_header const &h) {
+	os << "\n|================= HEADER =================|" << std::endl;
+    os << "| Message Size: " << static_cast<int>(h.messageSize) << "\n";
+    os << "| Message Type: " << static_cast<int>(h.messageType) << "\n";
+    os << "| Message Sequence: " << static_cast<int>(h.messageSequence) << "\n";
+    os << "|================== BODY ==================|" << std::endl;
+    os << "| Status: ";
+	return (os);
 }
 
 void	LoginRequest::checkAndmemcpy(size_t sizeStr, size_t fixedSize, char *dest, const char *src) {
@@ -33,7 +34,7 @@ bool	LoginRequest::checkRequest(void) {
 	response = 0;
 	memcpy(&headerResponse, this->_recvBuf, sizeof(headerResponse));
 	memcpy(&response, &this->_recvBuf[sizeof(headerResponse)], sizeof(response));
-	printTest(headerResponse, response);
+	std::cout << headerResponse << response << "\n\n";
 	if (!response)
 		return false;
 	return true;
