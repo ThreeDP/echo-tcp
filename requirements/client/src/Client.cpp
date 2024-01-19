@@ -53,7 +53,8 @@ Client::Client(std::string sh, std::string sp) \
 
 Client::~Client(void) {
     close(this->_sockFd);
-    freeaddrinfo(this->_sockAddr);
+    if (this->_sockAddr)
+        free(this->_sockAddr);
 }
 
 ssize_t    Client::mountRequest(char *send, char *line, uint8_t msgSeq) {

@@ -5,22 +5,24 @@ networks:
 
 volumes:
   client-volume:
+    name: client-volume
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: ./client/src
+      device: ./requirements/client/src
 
   server-volume:
+    name: server-volume
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: ./server/src
+      device: ./requirements/server/src
 
 secrets:
   environment:
-    file: ./env
+    file: ./.env
 
 services:
   client:
