@@ -1,4 +1,4 @@
-#include "./includes/client.hpp"
+#include "./includes/Client.hpp"
 
 void    runServer(Client client) {
     try {
