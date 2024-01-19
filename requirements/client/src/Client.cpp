@@ -16,7 +16,7 @@ void    Client::confingClient(void) {
 
     this->_clientAddr.ai_family = AF_INET;
     this->_clientAddr.ai_socktype = SOCK_STREAM;
-     this->_sockFd = socket(AF_INET, SOCK_STREAM, 0);
+    this->_sockFd = socket(AF_INET, SOCK_STREAM, 0);
     if (this->_sockFd == -1) {
         std::string err = "Error: creating socket [ " + std::string(strerror(errno)) + " ].";
         throw(Except(err));
@@ -34,36 +34,66 @@ void    Client::connectToServer(void) {
         std::string err = "Error: connecting to the server [ " + std::string(errno_msg) + " ].";
         throw(Except(err));
     }
-    if (this->_autheticate.login(this->_sockFd, 8) == false) {
+    if (this->_autheticate.login(this->_sockFd, 0) == false) {
         std::string err = "Error: autheticate.";
         throw(Except(err));
     }
     std::cout << "Connect on host: " << this->_serverHost << " | Port: " << this->_serverPort << std::endl;
 }
 
-void    Client::sendMessageToServer(void) {
-    char    send_line[MAX_LINE];
-    char    recv_line[MAX_LINE];
-    ssize_t bytes_sent;
-    ssize_t bytes_received;
+ssize_t    Client::mountRequest(char *send, char *line, uint8_t msgSeq) {
+    uint16_t        size;
+    t_echo_request  eReq;
 
-    while (std::cin.getline(send_line, MAX_LINE)) {
+    bzero(send, MAX_LINE);
+    bzero(&eReq, sizeof(eReq));
+    size = strlen(line) + HEADER_SIZE;
+    eReq.header = (t_header) {.messageSize=size, .messageType=TEXT_REQUEST_TYPE, .messageSequence=msgSeq};
+    this->_autheticate.encryptMessage(line, size - HEADER_SIZE);
+    memcpy(&eReq.cipherMessage, &line, size - HEADER_SIZE);
+    memcpy(send, &eReq, eReq.header.messageSize);
+    bzero(line, MAX_LINE);
+    return eReq.header.messageSize;
+}
+
+t_echo_response    Client::unmountResponse(char *line) {
+    t_echo_response eRes;
+
+    bzero(&eRes, sizeof(eRes));
+    memcpy(&eRes, line, MAX_LINE);
+    bzero(line, MAX_LINE);
+    return eRes;
+}
+
+void    Client::sendMessageToServer(void) {
+    ssize_t         bytes_sent;
+    char            buf[MAX_LINE];
+    ssize_t         bytes_received;
+    char            communication[MAX_LINE];
+    t_echo_response eRes;
+
+    bzero(&buf, sizeof(buf));
+    for (uint8_t i; std::cin.getline(buf, MAX_LINE); i++) {
         bytes_sent = 0;
         bytes_received = 0;
-        if (std::strcmp(send_line, "") == 0)
+        bzero(&eRes, sizeof(eRes));
+        if (buf == std::string(""))
             continue ;
-        if (std::strcmp(send_line, "exit") == 0)
+        if (buf == std::string("exit"))
             break ;
-        if ((bytes_sent = send(this->_sockFd, send_line, strlen(send_line), 0)) == -1) {
+        this->mountRequest(communication, buf, i);
+        if ((bytes_sent = send(this->_sockFd, communication, strlen(communication), 0)) == -1) {
             std::string err = "Error: sending data. [ " + std::string(strerror(errno)) + " ].";
             throw(Except(err));
         }
-        if ((bytes_received = recv(this->_sockFd, recv_line, MAX_LINE, 0)) == -1) {
+        bzero(communication, sizeof(communication));
+        if ((bytes_received = recv(this->_sockFd, communication, MAX_LINE, 0)) == -1) {
             std::string err = "Error: receiving data [ " + std::string(strerror(errno)) + " ].";
             throw(Except(err));
         }
-        std::cout << recv_line << std::endl;
-        bzero(&send_line, sizeof(send_line));
-        bzero(&recv_line, sizeof(recv_line));
+        eRes = this->unmountResponse(communication);
+        std::cout << eRes.plainMessage << std::endl;
+        if (i > 255)
+            i = 0;
     }
 }

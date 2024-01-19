@@ -6,12 +6,6 @@
 typedef struct sockaddr_in sock_address;
 typedef struct addrinfo addrinfo;
 
-typedef struct s_echo_request {
-    t_header        header;
-    uint16_t        messageSize;
-    char            cipherMessage[MAX_CIPHER_SIZE];
-}               t_echo_request;
-
 class Client {
     int             _sockFd;
     std::string     _serverHost;
@@ -20,6 +14,8 @@ class Client {
     addrinfo        *_sockAddr;
     LoginRequest    _autheticate;
     Client(void){};
+    t_echo_response     unmountResponse(char *line);
+    ssize_t             mountRequest(char *send, char *line, uint8_t msgSeq);
 
     public:
         Client(std::string sh, std::string sp, std::string user, std::string pass);

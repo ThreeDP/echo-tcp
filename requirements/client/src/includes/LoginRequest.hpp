@@ -28,7 +28,6 @@ class LoginRequest {
 	void	genInitialKey(void);
 	uint8_t	checkSum(std::string str);
 	void	nextKey(void);
-	void	encryptMessage(std::string &str);
 
 	public:
 		LoginRequest(void) : _username(""), _password("") {}
@@ -36,6 +35,7 @@ class LoginRequest {
 		LoginRequest(std::string user, std::string pass) : _username(user), _password(pass) {}
 		~LoginRequest(void){}
    
+		void	encryptMessage(char *str, ssize_t size);
 		bool	login(int sockFD, uint8_t seq);
 };
 

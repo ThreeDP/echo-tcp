@@ -23,4 +23,16 @@ typedef struct s_header {
     uint8_t         messageSequence;
 }               t_header;
 
+typedef struct s_echo_request {
+    t_header        header;
+    uint16_t        messageSize;
+    char            cipherMessage[MAX_TEXT_SIZE];
+}               t_echo_request;
+
+typedef struct s_echo_response {
+    t_header        header;
+    uint16_t        messageSize;
+    char            plainMessage[MAX_TEXT_SIZE];
+}               t_echo_response;
+
 #endif

@@ -10,7 +10,7 @@ void	LoginRequest::checkAndmemcpy(size_t sizeStr, size_t fixedSize, char *dest, 
 void	LoginRequest::mountRequest(uint8_t seq) {
 	bzero(&this->_sendBuf, sizeof(this->_sendBuf));
 	bzero(&this->_labelRequest, sizeof(this->_labelRequest));
-	this->_labelRequest.header = (t_header) {.messageSize=LOGIN_BUFFER_SIZE, .messageType=0, .messageSequence=seq};
+	this->_labelRequest.header = (t_header) {.messageSize=LOGIN_BUFFER_SIZE, .messageType=LOGIN_REQUEST_TYPE, .messageSequence=seq};
 	this->checkAndmemcpy(this->_username.size(), LOGIN_USER_SIZE, this->_labelRequest.username, this->_username.c_str());
 	this->checkAndmemcpy(this->_password.size(), LOGIN_PASS_SIZE, this->_labelRequest.password, this->_password.c_str());
 	memcpy(this->_sendBuf, &this->_labelRequest, LOGIN_BUFFER_SIZE);
@@ -66,10 +66,7 @@ void	LoginRequest::nextKey(void) {
 	this->_keys.push(newKey);
 }
 
-void	LoginRequest::encryptMessage(std::string &str) {
-	ssize_t	size;
-
-	size = str.size();
+void	LoginRequest::encryptMessage(char *str, ssize_t size) {
 	for (ssize_t i = 0; i < size; i++) {
 		str[i] ^= (this->_keys.top() % 256);
 	}

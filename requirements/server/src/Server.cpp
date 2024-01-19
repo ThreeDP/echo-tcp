@@ -34,7 +34,7 @@ void    Server::putServerToListen(void) {
         }
         if ((this->_childPid = fork()) == 0) {
             close(this->_listenFD);
-            if (this->_login.waitingForLogin(this->_connectFD) == false)
+            if (this->_login.loginAuthentication(this->_connectFD, 0) == false)
                 exit(1);
             this->handleServerCalls();
             exit(0);

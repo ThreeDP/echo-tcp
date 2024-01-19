@@ -5,12 +5,6 @@
 
 typedef struct sockaddr_in sock_address;
 
-typedef struct s_echo_response {
-    t_header        header;
-    uint16_t        messageSize;
-    char            plainMessage[65530];
-}               t_echo_response;
-
 class Server {
     int                 _listenFD;
     int                 _connectFD;
