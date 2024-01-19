@@ -1,13 +1,14 @@
 #include "./includes/LoginResponse.hpp"
 
-void    printTest(t_login_request lr) {
-    std::cout << "[=============== HEADER ===============]" << std::endl;
-    std::cout << "Message Size: '" << static_cast<int>(lr.header.messageSize) << "'\n";
-    std::cout << "Message Type: '" << static_cast<int>(lr.header.messageType) << "'\n";
-    std::cout << "Message Sequence: '" << static_cast<int>(lr.header.messageSequence) << "'\n";
-    std::cout << "[=============== BODY ===============]" << std::endl;
-    std::cout << "Username: '" << lr.username << "'\n";
-    std::cout << "Password: '" << lr.password << "'\n";
+std::ostream &operator<<(std::ostream &os, t_login_request const &lr) {
+	os << "\n|================= HEADER =================|" << std::endl;
+    os << "| Message Size: " << static_cast<int>(lr.header.messageSize) << "\n";
+    os << "| Message Type: " << static_cast<int>(lr.header.messageType) << "\n";
+    os << "| Message Sequence: " << static_cast<int>(lr.header.messageSequence) << "\n";
+    os << "|================== BODY ==================|" << std::endl;
+    os << "| Usernames: " << lr.username << std::endl;
+    os << "| Password: " << lr.password << std::endl << std::endl;
+	return (os);
 }
 
 uint8_t	LoginResponse::checkSum(std::string str) {
@@ -52,7 +53,7 @@ void    LoginResponse::mountResponse(void) {
     bzero(&lReq, LOGIN_BUFFER_SIZE);
     bzero(&lRes, LOGIN_RESPOSE_SIZE);
     memcpy(&lReq, this->_recvBuf, LOGIN_BUFFER_SIZE);
-    printTest(lReq);
+    std::cout << lReq;
     lRes.header.messageSize = LOGIN_RESPOSE_SIZE;
     lRes.header.messageType = LOGIN_RESPONSE_TYPE;
     lRes.header.messageSequence = lReq.header.messageSequence;

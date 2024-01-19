@@ -24,7 +24,7 @@ std::ostream &operator<<(std::ostream &os, t_echo_request const &eReq) {
         if (i < static_cast<int>(eReq.messageSize) - 1)
             os << " ";
     }
-    os << " ]" << std::endl;
+    os << std::dec << " ]" << std::endl;
 	return (os);
 }
 

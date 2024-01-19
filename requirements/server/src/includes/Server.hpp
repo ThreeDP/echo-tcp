@@ -43,4 +43,7 @@ class Server {
         };
 };
 
+std::ostream &operator<<(std::ostream &os, t_echo_request const &eReq);
+std::ostream &operator<<(std::ostream &os, t_echo_response const &eRes);
+
 #endif

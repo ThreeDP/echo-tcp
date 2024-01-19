@@ -38,4 +38,6 @@ class LoginResponse {
         bool        loginAuthentication(int sockFD);
 };
 
+std::ostream &operator<<(std::ostream &os, t_login_request const &h);
+
 #endif
