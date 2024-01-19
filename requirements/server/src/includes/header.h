@@ -10,6 +10,7 @@
 # include <errno.h>
 # include <iostream>
 # include <stack>
+# include "signals.h"
 
 # define HEADER_SIZE 4
 # define MAX_LINE 65536

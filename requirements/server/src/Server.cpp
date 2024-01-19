@@ -86,6 +86,7 @@ void    Server::putServerToListen(void) {
         }
         this->_socksFDs.push(this->_connectFD);
         if ((this->_childPid = fork()) == 0) {
+            wait_sig_child();
             close(this->_listenFD);
             if (this->_login.loginAuthentication(this->_connectFD) == false)
                 exit(1);

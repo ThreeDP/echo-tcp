@@ -1,4 +1,4 @@
-#include "./includes/client.hpp" 
+#include "./includes/client.hpp"
 
 void    runServer(Client client) {
     try {
@@ -16,6 +16,7 @@ int main(int ac, char **av) {
         std::cerr << "usage: ./client <IPaddress> <ServerPort> <UserName> <PassWord>" << std::endl;
         exit(1);
     }
+    wait_signal();
     if (ac == 3) {
         Client      client(av[1], av[2]);
         runServer(client);

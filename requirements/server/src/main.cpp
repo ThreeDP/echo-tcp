@@ -5,6 +5,7 @@ int main(int ac, char **av) {
         std::cerr << "error usage: ./server <Server IP> <Server Port>" << std::endl;
         return (1);
     }
+    wait_signal();
     Server      server(av[1], av[2]);
     try {
         server.configServer();

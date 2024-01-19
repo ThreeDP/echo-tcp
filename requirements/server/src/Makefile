@@ -1,8 +1,8 @@
 NAME						=	server
 HEADERS_PATH				=	./includes/
 HEADERS						=	$(addprefix $(HEADERS_PATH), \
-									Server.hpp header.h LoginResponse.hpp)
-SRCS						=	main.cpp Server.cpp LoginResponse.cpp
+									Server.hpp header.h LoginResponse.hpp signals.h)
+SRCS						=	main.cpp Server.cpp LoginResponse.cpp signals.cpp
 OBJ_PATH					=	./objs/
 OBJS						=	$(SRCS:%.cpp=$(OBJ_PATH)%.o)
 
