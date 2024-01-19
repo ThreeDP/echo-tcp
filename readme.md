@@ -61,6 +61,17 @@ make client
 ./client $SERVER_ADDR $SERVER_PORT <username> <password>
 ```
 
+# Improvement Points
+- Introduce a base class with generic server and client methods, applying inheritance concepts.
+- Implement a pseudo-random function to generate more robust login sequences.
+- Adopt socket multiplexing to optimize communication.
+- Create unit tests to ensure code robustness.
+- Develop load tests to evaluate performance under extreme conditions.
+- Conduct end-to-end tests to verify the complete system integration.
+- Enhance message splitting logic to efficiently handle the transmission of large messages.
+- Address memory leaks identified in the exception class.
+
+
 # Problem Description
 
 ![Graph](./assets/img/Graph.png)
