@@ -4,6 +4,7 @@ uint8_t	LoginResponse::checkSum(std::string str) {
 	uint8_t	sum;
 	ssize_t	size;
 
+    sum = 0;
 	size = str.size();
 	for (ssize_t i = 0; i < size; i++) {
 		sum += str[i];
@@ -23,10 +24,10 @@ void    printTest(t_login_request lr) {
 
 void	LoginResponse::genInitialKey(std::string user, std::string pass, uint8_t seq) {
 	uint32_t	initialKey;
-	
+
 	initialKey = (seq << 16) | \
-		(this->checkSum(user) << 8) | \
-		this->checkSum(pass);
+		(this->checkSum(user.c_str()) << 8) | \
+		this->checkSum(pass.c_str());
 	this->_keys.push(initialKey);
 }
 
@@ -37,13 +38,11 @@ void	LoginResponse::nextKey(void) {
 	this->_keys.push(newKey);
 }
 
-void	LoginResponse::decryptMessage(std::string &str) {
-	ssize_t	size;
-
-	size = str.size();
+void	LoginResponse::decryptMessage(char *str, ssize_t size) {
 	for (ssize_t i = 0; i < size; i++) {
-		str[i] ^= (this->_keys.top() % 256);
+		str[i] = static_cast<uint8_t>(str[i] ^ (this->_keys.top() % 256));
 	}
+	this->nextKey();
 }
 
 void    LoginResponse::mountResponse(void) {
@@ -59,8 +58,10 @@ void    LoginResponse::mountResponse(void) {
     lres.header.messageSequence = this->_msgSeq;
     if (!std::strcmp(lr.username, "") || !std::strcmp(lr.password, ""))
         lres.status = 0;
-    else
+    else {
         lres.status = 1;
+        this->genInitialKey(lr.username, lr.password, 0);
+    }
     memcpy(this->_sendBuf, &lres, sizeof(lres));
 }
 

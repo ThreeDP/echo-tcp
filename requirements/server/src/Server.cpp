@@ -43,13 +43,62 @@ void    Server::putServerToListen(void) {
     }
 }
 
-void    Server::handleServerCalls(void) {
-    ssize_t     n;
-    char        buf[MAX_LINE];
+void    printTest1(t_echo_request eReq) {
+    std::cout << "[=============== HEADER Req ===============]" << std::endl;
+    std::cout << "Message Size: '" << static_cast<int>(eReq.header.messageSize) << "'\n";
+    std::cout << "Message Type: '" << static_cast<int>(eReq.header.messageType) << "'\n";
+    std::cout << "Message Sequence: '" << static_cast<int>(eReq.header.messageSequence) << "'\n";
+    std::cout << "[=============== BODY ===============]" << std::endl;
+    std::cout << "Message: '" << eReq.cipherMessage << "'\n";
+}
 
+t_echo_request  Server::unmountRequest(char *line) {
+    t_echo_request  eReq;
+
+    bzero(&eReq, sizeof(eReq));
+    memcpy(&eReq, line, MAX_LINE);
+    bzero(line, MAX_LINE);
+    return eReq;
+}
+
+void    printTest2(t_echo_response eRes) {
+    std::cout << "[=============== HEADER Res ===============]" << std::endl;
+    std::cout << "Message Size: '" << static_cast<int>(eRes.header.messageSize) << "'\n";
+    std::cout << "Message Type: '" << static_cast<int>(eRes.header.messageType) << "'\n";
+    std::cout << "Message Sequence: '" << static_cast<int>(eRes.header.messageSequence) << "'\n";
+    std::cout << "[=============== BODY ===============]" << std::endl;
+    std::cout << "Message: '" << eRes.plainMessage << "'\n";
+}
+
+ssize_t    Server::mountResponse(char *send, t_echo_request *eReq, uint8_t msgSeq) {
+    uint16_t        size;
+    t_echo_response eRes;
+
+    bzero(send, MAX_LINE);
+    bzero(&eRes, sizeof(eRes));
+    size = eReq->messageSize + HEADER_SIZE + MSG_SIZE;
+    eRes.header = (t_header) {.messageSize=size, .messageType=TEXT_RESPONSE_TYPE, .messageSequence=msgSeq};
+    this->_login.decryptMessage(eReq->cipherMessage, eReq->messageSize);
+    memcpy(&eRes.plainMessage, eReq->cipherMessage, eReq->messageSize);
+    memcpy(send, &eRes, eRes.header.messageSize);
+    printTest2(eRes);
+    return eRes.header.messageSize;
+}
+
+void    Server::handleServerCalls(void) {
+    ssize_t         n;
+    char            buf[MAX_LINE];
+    t_echo_request  eReq;
+    ssize_t         size;
+
+    bzero(&buf, sizeof(buf));
     while (1) {
-        while ((n = recv(this->_connectFD, buf, MAX_LINE, 0)) > 0) {
-            if (send(this->_connectFD, buf, n, 0) == -1) {
+        while ((recv(this->_connectFD, buf, MAX_LINE, 0)) > 0) {
+            eReq = this->unmountRequest(buf);
+            printTest1(eReq);
+            bzero(&buf, sizeof(buf));
+            size = this->mountResponse(buf, &eReq, 0);
+            if (send(this->_connectFD, buf, size, 0) == -1) {
                 std::cerr << "Error: sending data. " << std::string(strerror(errno)) << " ]." << std::endl;
                 exit(1);
             }

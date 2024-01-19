@@ -16,6 +16,8 @@ class Client {
     Client(void){};
     t_echo_response     unmountResponse(char *line);
     ssize_t             mountRequest(char *send, char *line, uint8_t msgSeq);
+    void                recvMessage(void);
+    void                sendMessage(char *line, uint8_t seqMsg);
 
     public:
         Client(std::string sh, std::string sp, std::string user, std::string pass);

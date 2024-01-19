@@ -19,6 +19,9 @@ class Server {
     uint32_t            _serverPort;
     Server(void) : _backlog(8) {};
 
+    ssize_t         mountResponse(char *send, t_echo_request *eReq, uint8_t msgSeq);
+    t_echo_request  unmountRequest(char *line);
+
     public:
         Server(std::string sh, std::string sp);
         ~Server(void);

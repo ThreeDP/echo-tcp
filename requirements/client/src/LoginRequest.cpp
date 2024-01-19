@@ -43,6 +43,7 @@ uint8_t	LoginRequest::checkSum(std::string str) {
 	uint8_t	sum;
 	ssize_t	size;
 
+	sum = 0;
 	size = str.size();
 	for (ssize_t i = 0; i < size; i++) {
 		sum += str[i];
@@ -52,7 +53,7 @@ uint8_t	LoginRequest::checkSum(std::string str) {
 
 void	LoginRequest::genInitialKey(void) {
 	uint32_t	initialKey;
-	
+
 	initialKey = (this->_labelRequest.header.messageSequence << 16) | \
 		(this->checkSum(this->_username) << 8) | \
 		this->checkSum(this->_password);
@@ -68,8 +69,9 @@ void	LoginRequest::nextKey(void) {
 
 void	LoginRequest::encryptMessage(char *str, ssize_t size) {
 	for (ssize_t i = 0; i < size; i++) {
-		str[i] ^= (this->_keys.top() % 256);
+		str[i] = static_cast<uint8_t>(str[i] ^ (this->_keys.top() % 256));
 	}
+	this->nextKey();
 }
 
 bool	LoginRequest::login(int sockFD, uint8_t seq) {

@@ -29,13 +29,13 @@ class LoginResponse {
     uint8_t	checkSum(std::string str);
 	void	genInitialKey(std::string user, std::string pass, uint8_t seq);
 	void	nextKey(void);
-	void	decryptMessage(std::string &str);
     void    mountResponse(void);
 
     public:
         LoginResponse() {};
         ~LoginResponse(void) {};
 
+	    void        decryptMessage(char *str, ssize_t size);
         bool        loginAuthentication(int sockFD, uint8_t msqSeq);
 };
 
