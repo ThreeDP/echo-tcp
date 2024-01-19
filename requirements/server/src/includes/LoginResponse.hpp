@@ -24,7 +24,6 @@ class LoginResponse {
     char				    _sendBuf[LOGIN_RESPOSE_SIZE];
 	char				    _recvBuf[LOGIN_BUFFER_SIZE];
     std::stack<uint32_t>    _keys;
-    uint8_t                _msgSeq;
 
     uint8_t	checkSum(std::string str);
 	void	genInitialKey(std::string user, std::string pass, uint8_t seq);
@@ -36,7 +35,7 @@ class LoginResponse {
         ~LoginResponse(void) {};
 
 	    void        decryptMessage(char *str, ssize_t size);
-        bool        loginAuthentication(int sockFD, uint8_t msqSeq);
+        bool        loginAuthentication(int sockFD);
 };
 
 #endif

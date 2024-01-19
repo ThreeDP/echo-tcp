@@ -1,5 +1,5 @@
 # TCP Echo Server
-> Create an TCP echo server
+The purpose of this project is to establish secure communication using the Linear Congruential Generator (LCG) cipher algorithm over a TCP protocol between a client and a server. In the first stage, the client sends login data to the server, which verifies if both fields are filled, granting permission for the client to proceed with the connection. The second stage involves message exchange, where the client reads user input, encrypts the text using the LCG key, and sends it to the server. The server then decrypts the message and forwards it back to the client. This process ensures secure and effective communication between the involved parties.
 
 # How to build
 
@@ -51,6 +51,14 @@ make fclean
 To clean and rebuild the project:
 ```
 make re
+```
+
+### Running a client
+
+To run a client, simply open a terminal and execute the following commands:
+```
+make client
+./client $SERVER_ADDR $SERVER_PORT <username> <password>
 ```
 
 # Problem Description

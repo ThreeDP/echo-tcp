@@ -1,5 +1,14 @@
 #include "./includes/LoginRequest.hpp"
 
+void    printTest(t_header h, uint16_t response) {
+    std::cout << "[=============== HEADER ===============]" << std::endl;
+    std::cout << "Message Size: '" << static_cast<int>(h.messageSize) << "'\n";
+    std::cout << "Message Type: '" << static_cast<int>(h.messageType) << "'\n";
+    std::cout << "Message Sequence: '" << static_cast<int>(h.messageSequence) << "'\n";
+    std::cout << "[=============== BODY ===============]" << std::endl;
+    std::cout << "Status: '" << response << "'\n";
+}
+
 void	LoginRequest::checkAndmemcpy(size_t sizeStr, size_t fixedSize, char *dest, const char *src) {
 	if (sizeStr < fixedSize)
 		memcpy(dest, src, sizeStr);
@@ -14,15 +23,6 @@ void	LoginRequest::mountRequest(uint8_t seq) {
 	this->checkAndmemcpy(this->_username.size(), LOGIN_USER_SIZE, this->_labelRequest.username, this->_username.c_str());
 	this->checkAndmemcpy(this->_password.size(), LOGIN_PASS_SIZE, this->_labelRequest.password, this->_password.c_str());
 	memcpy(this->_sendBuf, &this->_labelRequest, LOGIN_BUFFER_SIZE);
-}
-
-void    printTest(t_header h, uint16_t response) {
-    std::cout << "[=============== HEADER ===============]" << std::endl;
-    std::cout << "Message Size: '" << static_cast<int>(h.messageSize) << "'\n";
-    std::cout << "Message Type: '" << static_cast<int>(h.messageType) << "'\n";
-    std::cout << "Message Sequence: '" << static_cast<int>(h.messageSequence) << "'\n";
-    std::cout << "[=============== BODY ===============]" << std::endl;
-    std::cout << "Status: '" << response << "'\n";
 }
 
 bool	LoginRequest::checkRequest(void) {
@@ -74,11 +74,11 @@ void	LoginRequest::encryptMessage(char *str, ssize_t size) {
 	this->nextKey();
 }
 
-bool	LoginRequest::login(int sockFD, uint8_t seq) {
+bool	LoginRequest::login(int sockFD) {
 	ssize_t	bytes_send;
 	ssize_t bytes_recv;
 
-	this->mountRequest(seq);
+	this->mountRequest((this->checkSum(this->_username) * this->checkSum(this->_password)) % 256);
 	bytes_send = send(sockFD, this->_sendBuf, LOGIN_BUFFER_SIZE, 0);
 	if (bytes_send == -1)
 		return false;

@@ -20,7 +20,7 @@ class Server {
     uint32_t            _serverPort;
     Server(void) : _backlog(8) {};
 
-    ssize_t         mountResponse(char *send, t_echo_request *eReq, uint8_t msgSeq);
+    ssize_t         mountResponse(char *send, t_echo_request *eReq);
     t_echo_request  unmountRequest(char *line);
     t_echo_request  recvMessage(ssize_t *bytes, int connectFD);
     void            sendMessage(t_echo_request *eReq);

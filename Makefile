@@ -10,6 +10,9 @@ build:
 up:
 	docker-compose -f $(COMPOSE) up -d
 
+client:
+	docker exec -it client ash
+
 down:
 	docker-compose -f $(COMPOSE) down 
 
@@ -23,4 +26,4 @@ fclean: clean-p clean-i
 
 re:  fclean all
 
-.PHONY: all build up down clean fclean
+.PHONY: all build up down clean fclean client

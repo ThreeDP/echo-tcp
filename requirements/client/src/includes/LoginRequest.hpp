@@ -36,7 +36,7 @@ class LoginRequest {
 		~LoginRequest(void){}
    
 		void	encryptMessage(char *str, ssize_t size);
-		bool	login(int sockFD, uint8_t seq);
+		bool	login(int sockFD);
 };
 
 #endif

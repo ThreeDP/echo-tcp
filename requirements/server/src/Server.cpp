@@ -6,7 +6,12 @@ void    printTest1(t_echo_request eReq) {
     std::cout << "Message Type: '" << static_cast<int>(eReq.header.messageType) << "'\n";
     std::cout << "Message Sequence: '" << static_cast<int>(eReq.header.messageSequence) << "'\n";
     std::cout << "[=============== BODY ===============]" << std::endl;
-    std::cout << "Message: '" << eReq.cipherMessage << "'\n";
+    std::cout << "Message Size: '" << eReq.messageSize << "'\n";
+    std::cout << "Cipher Message: '";
+    for (int i = 0; i < eReq.messageSize; i++) {
+        std::cout << std::hex << static_cast<int>(eReq.cipherMessage[i]) << " ";
+    }
+    std::cout << "'\n";
 }
 
 void    printTest2(t_echo_response eRes) {
@@ -15,8 +20,10 @@ void    printTest2(t_echo_response eRes) {
     std::cout << "Message Type: '" << static_cast<int>(eRes.header.messageType) << "'\n";
     std::cout << "Message Sequence: '" << static_cast<int>(eRes.header.messageSequence) << "'\n";
     std::cout << "[=============== BODY ===============]" << std::endl;
-    std::cout << "Message: '" << eRes.plainMessage << "'\n";
+    std::cout << "Message Size: '" << eRes.messageSize << "'\n";
+    std::cout << "Plain Text: '" << eRes.plainMessage << "'\n";
 }
+
 
 Server::Server(std::string sh, std::string sp) : _serverHost(std::stoul(sh)), _serverPort(std::stoul(sp)), _backlog(8) {
     bzero(&this->_serverAddr, sizeof(this->_serverAddr));
@@ -49,14 +56,14 @@ t_echo_request  Server::unmountRequest(char *line) {
     return eReq;
 }
 
-ssize_t    Server::mountResponse(char *send, t_echo_request *eReq, uint8_t msgSeq) {
+ssize_t    Server::mountResponse(char *send, t_echo_request *eReq) {
     uint16_t        size;
     t_echo_response eRes;
 
     bzero(send, MAX_LINE);
     bzero(&eRes, sizeof(eRes));
     size = eReq->messageSize + HEADER_SIZE + MSG_SIZE;
-    eRes.header = (t_header) {.messageSize=size, .messageType=TEXT_RESPONSE_TYPE, .messageSequence=msgSeq};
+    eRes.header = (t_header) {.messageSize=size, .messageType=TEXT_RESPONSE_TYPE, .messageSequence=eReq->header.messageSequence};
     this->_login.decryptMessage(eReq->cipherMessage, eReq->messageSize);
     memcpy(&eRes.plainMessage, eReq->cipherMessage, eReq->messageSize);
     memcpy(send, &eRes, eRes.header.messageSize);
@@ -80,7 +87,7 @@ void    Server::putServerToListen(void) {
         this->_socksFDs.push(this->_connectFD);
         if ((this->_childPid = fork()) == 0) {
             close(this->_listenFD);
-            if (this->_login.loginAuthentication(this->_connectFD, 0) == false)
+            if (this->_login.loginAuthentication(this->_connectFD) == false)
                 exit(1);
             this->handleServerCalls(this->_connectFD);
             close(this->_connectFD);
@@ -129,7 +136,7 @@ void    Server::sendMessage(t_echo_request *eReq) {
     char    buf[MAX_LINE];
 
     bzero(&buf, sizeof(buf));
-    size = this->mountResponse(buf, eReq, 0);
+    size = this->mountResponse(buf, eReq);
     bytes = send(this->_connectFD, buf, size, 0);
     if (bytes == -1) {
         std::cerr << "Error: sending data. " << std::string(strerror(errno)) << " ]." << std::endl;

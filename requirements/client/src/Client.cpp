@@ -7,17 +7,21 @@ void    printTest1(t_echo_response eRes) {
     std::cout << "Message Sequence: '" << static_cast<int>(eRes.header.messageSequence) << "'\n";
     std::cout << "[=============== BODY ===============]" << std::endl;
     std::cout << "Message Size: '" << eRes.messageSize << "'\n";
-    std::cout << "Plain Text: '" << eRes.plainMessage << "'\n";
+    std::cout << "Plain Text: '" << eRes.plainMessage << "'\n\n";
 }
 
 void    printTest2(t_echo_request eReq) {
-    std::cout << "[=============== HEADER Req ===============]" << std::endl;
+    std::cout << "\n[=============== HEADER Req ===============]" << std::endl;
     std::cout << "Message Size: '" << static_cast<int>(eReq.header.messageSize) << "'\n";
     std::cout << "Message Type: '" << static_cast<int>(eReq.header.messageType) << "'\n";
     std::cout << "Message Sequence: '" << static_cast<int>(eReq.header.messageSequence) << "'\n";
     std::cout << "[=============== BODY ===============]" << std::endl;
     std::cout << "Message Size: '" << eReq.messageSize << "'\n";
-    std::cout << "Cipher Message: '" << eReq.cipherMessage << "'\n";
+    std::cout << "Cipher Message: '";
+    for (int i = 0; i < eReq.messageSize; i++) {
+        std::cout << std::hex << static_cast<int>(eReq.cipherMessage[i]) << " ";
+    }
+    std::cout << "'\n";
 }
 
 Client::Client() : _serverHost("0.0.0.0"), _serverPort("9000"), _autheticate(LoginRequest()) {
@@ -104,7 +108,7 @@ void    Client::connectToServer(void) {
         std::string err = "Error: connecting to the server [ " + std::string(errno_msg) + " ].";
         throw(Except(err));
     }
-    if (this->_autheticate.login(this->_sockFd, 0) == false) {
+    if (this->_autheticate.login(this->_sockFd) == false) {
         std::string err = "Error: autheticate.";
         throw(Except(err));
     }
@@ -116,6 +120,7 @@ void    Client::sendMessageToServer(void) {
     char            line[MAX_LINE];
 
     bzero(&line, sizeof(line));
+    std::cout << ">> ";
     for (uint8_t seqMsg; std::cin.getline(line, MAX_LINE); seqMsg++) {
         if (line == std::string(""))
             continue ;
@@ -123,8 +128,9 @@ void    Client::sendMessageToServer(void) {
             break ;
         this->sendMessage(line, seqMsg);
         this->recvMessage();
-        if (seqMsg > 255)
+        if (seqMsg >= 255)
             seqMsg = 0;
+        std::cout << ">> ";
     }
 }
 
