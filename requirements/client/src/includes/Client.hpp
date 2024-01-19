@@ -13,13 +13,16 @@ class Client {
     addrinfo        _clientAddr;
     addrinfo        *_sockAddr;
     LoginRequest    _autheticate;
-    Client(void){};
+    Client(void);
+    
     t_echo_response     unmountResponse(char *line);
     ssize_t             mountRequest(char *send, char *line, uint8_t msgSeq);
     void                recvMessage(void);
     void                sendMessage(char *line, uint8_t seqMsg);
 
     public:
+        Client(std::string sh, std::string sp);
+        Client(std::string sh, std::string sp, std::string user);
         Client(std::string sh, std::string sp, std::string user, std::string pass);
         ~Client(void);
 

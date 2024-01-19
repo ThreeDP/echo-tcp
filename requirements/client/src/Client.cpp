@@ -20,15 +20,37 @@ void    printTest2(t_echo_request eReq) {
     std::cout << "Cipher Message: '" << eReq.cipherMessage << "'\n";
 }
 
+Client::Client() : _serverHost("0.0.0.0"), _serverPort("9000"), _autheticate(LoginRequest()) {
+    bzero(&this->_clientAddr, sizeof(this->_clientAddr));
+    bzero(&this->_sockAddr, sizeof(this->_sockAddr));
+    this->_sockFd = 0;
+}
+
 Client::Client(std::string sh, std::string sp, std::string user, std::string pass) \
 : _serverHost(sh), _serverPort(sp), _autheticate(LoginRequest(user, pass)) {
     bzero(&this->_clientAddr, sizeof(this->_clientAddr));
+    bzero(&this->_sockAddr, sizeof(this->_sockAddr));
+    this->_sockFd = 0;
+}
+
+Client::Client(std::string sh, std::string sp, std::string user) \
+: _serverHost(sh), _serverPort(sp), _autheticate(LoginRequest(user)) {
+    bzero(&this->_clientAddr, sizeof(this->_clientAddr));
+    bzero(&this->_sockAddr, sizeof(this->_sockAddr));
+    this->_sockFd = 0;
+}
+
+Client::Client(std::string sh, std::string sp) \
+: _serverHost(sh), _serverPort(sp), _autheticate(LoginRequest()) {
+    bzero(&this->_clientAddr, sizeof(this->_clientAddr));
+    bzero(&this->_sockAddr, sizeof(this->_sockAddr));
     this->_sockFd = 0;
 }
 
 Client::~Client(void) {
     close(this->_sockFd);
-    free(this->_sockAddr);
+    if (this->_sockAddr)
+        free(this->_sockAddr);
 }
 
 ssize_t    Client::mountRequest(char *send, char *line, uint8_t msgSeq) {

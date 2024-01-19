@@ -14,6 +14,7 @@ class Server {
     pid_t               _childPid;
     socklen_t           _childLen;
     LoginResponse       _login;
+    std::stack<int>     _socksFDs;
 
     uint32_t            _serverHost;
     uint32_t            _serverPort;
@@ -21,6 +22,8 @@ class Server {
 
     ssize_t         mountResponse(char *send, t_echo_request *eReq, uint8_t msgSeq);
     t_echo_request  unmountRequest(char *line);
+    t_echo_request  recvMessage(ssize_t *bytes, int connectFD);
+    void            sendMessage(t_echo_request *eReq);
 
     public:
         Server(std::string sh, std::string sp);
@@ -28,7 +31,7 @@ class Server {
 
         void            configServer(void);
         void            putServerToListen(void);
-        void            handleServerCalls(void);
+        void            handleServerCalls(int connectFD);
 
         class Except: virtual public std::exception {
             protected:
