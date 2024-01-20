@@ -10,6 +10,7 @@
 # include <errno.h>
 # include <iostream>
 # include <stack>
+# include <iomanip>
 # include "signals.h"
 
 # define HEADER_SIZE 4

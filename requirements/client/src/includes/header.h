@@ -13,6 +13,8 @@
 # include <netdb.h>
 # include <stdio.h>
 # include <stack>
+# include <iomanip>
+# include <cstdlib>
 # include "signals.h"
 
 # define HEADER_SIZE 4
