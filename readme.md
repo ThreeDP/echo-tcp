@@ -1,6 +1,9 @@
 # TCP Echo Server
 The purpose of this project is to establish secure communication using the Linear Congruential Generator (LCG) cipher algorithm over a TCP protocol between a client and a server. In the first stage, the client sends login data to the server, which verifies if both fields are filled, granting permission for the client to proceed with the connection. The second stage involves message exchange, where the client reads user input, encrypts the text using the LCG key, and sends it to the server. The server then decrypts the message and forwards it back to the client. This process ensures secure and effective communication between the involved parties.
 
+https://github.com/ThreeDP/echo-tcp/assets/37334813/41086df9-89b3-428c-a0e7-001e8ef2be4b
+
+
 # How to build
 
 ### Config .env file

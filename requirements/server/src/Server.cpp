@@ -18,13 +18,14 @@ std::ostream &operator<<(std::ostream &os, t_echo_request const &eReq) {
     os << "| Message Sequence: " << static_cast<int>(eReq.header.messageSequence) << "\n";
     os << "|================== BODY ==================|" << std::endl;
     os << "| Message Size: " << eReq.messageSize << "\n";
-    os << "| Cipher Message: [ ";
+    os << "| Cipher Message: [ " << std::hex << std::uppercase;
     for (int i = 0; i < static_cast<int>(eReq.messageSize); i++) {
-        os << std::hex << static_cast<int>(eReq.cipherMessage[i]);
+        uint8_t c = eReq.cipherMessage[i];
+        os << static_cast<int>(c);
         if (i < static_cast<int>(eReq.messageSize) - 1)
             os << " ";
     }
-    os << " ]" << std::dec << std::endl;
+    os << std::dec << " ]" << std::endl;
 	return (os);
 }
 

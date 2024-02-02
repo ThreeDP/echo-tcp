@@ -70,7 +70,8 @@ void	LoginRequest::nextKey(void) {
 
 void	LoginRequest::encryptMessage(char *str, ssize_t size) {
 	for (ssize_t i = 0; i < size; i++) {
-		str[i] = static_cast<uint8_t>(str[i] ^ (this->_keys.top() % 256));
+		uint8_t num = (static_cast<uint8_t>(str[i]) ^ this->_keys.top()) % 256;
+		str[i] = static_cast<uint8_t>(num);
 	}
 	this->nextKey();
 }
